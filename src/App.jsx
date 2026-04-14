@@ -1,277 +1,151 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
-import { Hospital, Cpu, Plane, Wallet, ArrowRight, Activity, Brain, Navigation, TrendingUp } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import Lenis from 'lenis';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import logo from './assets/logo.mp4';
-import StarDust from './components/StarDust';
 
-const PROGRAMS = [
-  {
-    id: 1,
-    name: "Hospital Management Programme",
-    icon: Hospital,
-    subIcon: Activity,
-    color: "#B01116",
-    glow: "rgba(176, 17, 22, 0.4)"
-  },
-  {
-    id: 2,
-    name: "Artificial Intelligence for Managers Programme",
-    icon: Cpu,
-    subIcon: Brain,
-    color: "#004B98",
-    glow: "rgba(0, 75, 152, 0.4)"
-  },
-  {
-    id: 3,
-    name: "Airlines Management Programme",
-    icon: Plane,
-    subIcon: Navigation,
-    color: "#B01116",
-    glow: "rgba(176, 17, 22, 0.4)"
-  },
-  {
-    id: 4,
-    name: "FinTech Certificate Programme for Young Professionals",
-    icon: Wallet,
-    subIcon: TrendingUp,
-    color: "#004B98",
-    glow: "rgba(0, 75, 152, 0.4)"
-  }
-];
+import ParticleField from './components/ParticleField';
+import CustomCursor from './components/CustomCursor';
+import HeroSection from './components/HeroSection';
+import ImpactSection from './components/ImpactSection';
+import PlatformsSection from './components/PlatformsSection';
+import CatalogueSection from './components/CatalogueSection';
+import TestimonialsSection from './components/TestimonialsSection';
 
-const AuroraBackground = ({ activeColor }) => {
-  const { scrollYProgress } = useScroll();
-  
-  const blob1Color = useTransform(
-    scrollYProgress,
-    [0, 0.5],
-    ["rgba(255, 255, 255, 0)", activeColor || "rgba(176, 17, 22, 0.4)"]
-  );
+gsap.registerPlugin(ScrollTrigger);
 
-  return (
-    <div className="aurora-container">
-      <div className="aurora-grid"></div>
-      <motion.div 
-        className="aurora-layer"
-        style={{ background: blob1Color }}
-      >
-        <div className="aurora-blob" style={{ 
-          width: '80vw', height: '80vh', top: '10%', left: '10%', 
-          background: `radial-gradient(circle, ${activeColor || 'var(--color-primary)'} 0%, transparent 70%)`,
-          opacity: 0.4
-        }}></div>
-      </motion.div>
+const Navbar = () => (
+  <nav className="navbar">
+    <div className="navbar-logo">
+      <video autoPlay loop muted playsInline>
+        <source src={logo} type="video/mp4" />
+      </video>
     </div>
-  );
-};
+    <ul className="navbar-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#impact">Impact</a></li>
+      <li><a href="#platforms">Platforms</a></li>
+      <li><a href="#catalogue">Courses</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+    </ul>
+    <button className="navbar-cta">Explore Now</button>
+  </nav>
+);
 
-const ProgramCard = ({ program, isTop }) => {
-  const Icon = program.icon;
-  const SubIcon = program.subIcon;
-
-  return (
-    <motion.div
-      layout
-      initial={{ y: 100, opacity: 0, scale: 0.8, rotate: -5 }}
-      animate={{ 
-        y: 0, 
-        opacity: 1, 
-        scale: 1, 
-        rotate: 0,
-        zIndex: isTop ? 10 : 1,
-        transition: { type: "spring", stiffness: 100, damping: 15 }
-      }}
-      exit={{ y: -100, opacity: 0, scale: 0.8, rotate: 5 }}
-      className="program-card"
-    >
+const Footer = () => (
+  <footer>
+    <div className="footer">
       <div>
-        <div className="card-icon-container" style={{ background: `${program.color}15`, color: program.color }}>
-          <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <Icon size={80} strokeWidth={1.2} />
-          </motion.div>
-          <motion.div
-            style={{ position: 'absolute', top: -15, right: -15 }}
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-          >
-            <SubIcon size={40} color={program.color} />
-          </motion.div>
+        <div className="footer-brand">
+          IIMBx <span>Digital Learning Foundation</span>
         </div>
-        <h3 className="card-title">{program.name}</h3>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.4rem' }}>
+          A Section 8 Non-Profit Organization | Est. 2014
+        </p>
       </div>
-      
-      <motion.button 
-        className="know-more-btn"
-        whileHover={{ x: 5, backgroundColor: program.color }}
-        style={{ backgroundColor: '#0a0a0a' }}
-      >
-        Know More <ArrowRight size={18} />
-      </motion.button>
-    </motion.div>
-  );
-};
-
-const ScrollProgressRing = () => {
-  const { scrollYProgress } = useScroll();
-  const radius = 24;
-  const circumference = 2 * Math.PI * radius;
-  
-  const dashoffset = useTransform(scrollYProgress, [0, 1], [circumference, 0]);
-  const springOffset = useSpring(dashoffset, { stiffness: 100, damping: 30 });
-
-  return (
-    <div className="progress-ring-container">
-      <svg width="60" height="60" className="progress-ring-svg">
-        <circle
-          className="progress-ring-bg"
-          cx="30"
-          cy="30"
-          r={radius}
-        />
-        <motion.circle
-          className="progress-ring-circle"
-          cx="30"
-          cy="30"
-          r={radius}
-          strokeDasharray={circumference}
-          style={{ strokeDashoffset: springOffset }}
-          strokeLinecap="round"
-        />
-      </svg>
-      <motion.div style={{ position: 'absolute', fontSize: '10px', fontWeight: 800 }}>
-        {useTransform(scrollYProgress, (p) => `${Math.round(p * 100)}%`)}
-      </motion.div>
+      <p className="footer-copy">
+        © 2025 IIMBx Digital Learning Foundation · IIM Bangalore
+      </p>
     </div>
-  );
-};
+    <div style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(0,229,255,0.15), transparent)', maxWidth: '1500px', margin: '0 auto' }} />
+  </footer>
+);
 
-const ProgramShowcase = ({ onActiveChange }) => {
-  const [index, setIndex] = useState(0);
+const ScrollProgress = () => {
+  const barRef = useRef(null);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % PROGRAMS.length);
-    }, 3500);
-    return () => clearInterval(timer);
+    const update = () => {
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = total > 0 ? scrolled / total : 0;
+      if (barRef.current) {
+        barRef.current.style.width = `${progress * 100}%`;
+      }
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
   }, []);
 
-  useEffect(() => {
-    onActiveChange(PROGRAMS[index].glow);
-  }, [index, onActiveChange]);
-
-  return (
-    <div className="showcase-container">
-      <AnimatePresence mode="wait">
-        <ProgramCard 
-          key={PROGRAMS[index].id} 
-          program={PROGRAMS[index]} 
-          isTop={true} 
-        />
-      </AnimatePresence>
-    </div>
-  );
-};
-
-const Navbar = () => {
-  return (
-    <nav className="nav-v2">
-      <div className="logo-v2">
-        <video autoPlay loop muted playsInline>
-          <source src={logo} type="video/mp4" />
-        </video>
-      </div>
-    </nav>
-  );
-};
-
-const Hero = ({ onActiveProgramChange }) => {
-  const title = "IIMBx Digital Learning Foundation";
-  const words = title.split(" ");
-
-  return (
-    <section className="hero-v2">
-      <div className="hero-left">
-        <motion.h1 
-          className="hero-title-v2"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: { transition: { staggerChildren: 0.1 } }
-          }}
-        >
-          {words.map((word, i) => (
-            <motion.div key={i} style={{ display: 'inline-block', overflow: 'hidden', paddingRight: '0.3em' }}>
-              <motion.span 
-                variants={{
-                  hidden: { opacity: 0, y: 40, filter: 'blur(15px)' },
-                  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { type: 'spring', damping: 20 } }
-                }}
-                style={{ display: 'inline-block' }}
-              >
-                {word}
-              </motion.span>
-            </motion.div>
-          ))}
-        </motion.h1>
-        
-        <motion.p 
-          className="hero-subtitle-v2"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.8, duration: 1 }}
-        >
-          Advancing the frontier of digital education through 
-          pioneering pedagogical frameworks and technological excellence.
-        </motion.p>
-        
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          transition={{ delay: 1.5 }}
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            style={{
-              background: 'var(--color-primary)',
-              color: 'white',
-              border: 'none',
-              padding: '1.2rem 2.8rem',
-              borderRadius: '100px',
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              boxShadow: '0 20px 40px rgba(176, 17, 22, 0.2)'
-            }}
-          >
-            Explore Ecosystem
-          </motion.button>
-        </motion.div>
-      </div>
-
-      <div className="hero-right">
-        <ProgramShowcase onActiveChange={onActiveProgramChange} />
-      </div>
-    </section>
-  );
+  return <div className="scroll-progress" ref={barRef} />;
 };
 
 function App() {
-  const [activeGlow, setActiveGlow] = useState("rgba(176, 17, 22, 0.4)");
+  useEffect(() => {
+    // Lenis Smooth Scroll
+    const lenis = new Lenis({
+      duration: 1.4,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    // Sync Lenis with GSAP ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    // Scroll-triggered fade-in for cards/items in each section
+    const animateItems = (selector, trigger) => {
+      const items = document.querySelectorAll(selector);
+      if (!items.length) return;
+      gsap.fromTo(items,
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger,
+            start: 'top 75%',
+            toggleActions: 'play none none none',
+          }
+        }
+      );
+    };
+
+    // Wait for DOM to settle, then apply animations
+    setTimeout(() => {
+      animateItems('.stat-card', '.impact-section');
+      animateItems('.platform-card', '.platforms-section');
+      animateItems('.flip-card', '.catalogue-section');
+    }, 300);
+
+    return () => {
+      lenis.destroy();
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
+  }, []);
 
   return (
-    <div className="app-v2">
-      <StarDust />
-      <AuroraBackground activeColor={activeGlow} />
-      
-      <Navbar />
-      <Hero onActiveProgramChange={setActiveGlow} />
-      <ScrollProgressRing />
-      
-      <div style={{ height: '150vh' }}></div>
-    </div>
+    <>
+      <CustomCursor />
+      <ScrollProgress />
+      <ParticleField />
+
+      <div className="site-wrapper">
+        <Navbar />
+
+        <main>
+          <HeroSection />
+
+          <div className="section-divider" />
+          <ImpactSection />
+
+          <div className="section-divider" />
+          <PlatformsSection />
+
+          <div className="section-divider" />
+          <CatalogueSection />
+
+          <div className="section-divider" />
+          <TestimonialsSection />
+        </main>
+
+        <Footer />
+      </div>
+    </>
   );
 }
 
