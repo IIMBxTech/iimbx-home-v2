@@ -10,7 +10,7 @@ const PLATFORMS = [
     tagBorder: '#B01116',
   },
   {
-    emoji: '🇮🇳',
+    iconNode: <img src="https://flagcdn.com/w40/in.png" alt="India Flag" style={{ width: '28px', borderRadius: '4px' }} />,
     name: 'Swayam',
     tagline: 'National MOOC Platform',
     desc: 'IIM Bangalore promotes Access, Equity and Quality in education through SWAYAM\'s nationwide online course infrastructure.',
@@ -70,8 +70,8 @@ const PlatformsSection = () => {
                   boxShadow: `0 0 20px ${p.color}20`,
                 }}
               >
-                <span style={{ filter: `drop-shadow(0 0 8px ${p.color})` }}>
-                  {p.emoji}
+                <span style={{ filter: `drop-shadow(0 0 8px ${p.color})`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {p.iconNode || p.emoji}
                 </span>
               </div>
 

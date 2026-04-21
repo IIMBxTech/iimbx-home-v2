@@ -44,7 +44,7 @@ const Footer = () => (
         </p>
       </div>
       <p className="footer-copy">
-        © 2025 IIMBx Digital Learning Foundation · IIM Bangalore
+        © 2026 IIMBx Digital Learning Foundation · IIM Bangalore
       </p>
     </div>
     <div style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(0,229,255,0.15), transparent)', maxWidth: '1500px', margin: '0 auto' }} />
@@ -84,33 +84,90 @@ function App() {
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    // Scroll-triggered fade-in for cards/items in each section
-    const animateItems = (selector, trigger) => {
-      const items = document.querySelectorAll(selector);
+    // High-End Scrubbed 3D Scroll Animation
+    const animate3DCards = (selector, trigger) => {
+      const items = gsap.utils.toArray(selector);
       if (!items.length) return;
-      gsap.fromTo(items,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.12,
+      
+      gsap.set(trigger, { perspective: 2000 });
+      
+      items.forEach((item) => {
+        gsap.fromTo(item,
+          { 
+            y: 120, 
+            z: -150,
+            rotationX: -20, 
+            opacity: 0,
+            scale: 0.9,
+            filter: 'blur(20px)'
+          },
+          {
+            y: 0,
+            z: 0,
+            rotationX: 0,
+            opacity: 1,
+            scale: 1,
+            filter: 'blur(0px)',
+            scrollTrigger: {
+              trigger: item,
+              start: 'top 95%',
+              end: 'top 65%',
+              scrub: 1.5,
+              onLeave: () => gsap.set(item, { clearProps: 'transform,filter' }) // Restore CSS hovers
+            }
+          }
+        );
+      });
+    };
+
+    // Scrubbed 3D Text Reveal for Headlines
+    const animateHeadlines = (selector) => {
+      const elements = gsap.utils.toArray(selector);
+      elements.forEach((el) => {
+        gsap.set(el.parentElement, { perspective: 1000 });
+        gsap.fromTo(el, 
+          { y: 80, rotationX: -50, opacity: 0, filter: 'blur(15px)' },
+          { 
+            y: 0, rotationX: 0, opacity: 1, filter: 'blur(0px)',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 90%',
+              end: 'top 65%',
+              scrub: 1.2
+            }
+          }
+        );
+      });
+    };
+
+    // Wait for DOM to settle, then apply 3D animations
+    setTimeout(() => {
+      animate3DCards('.premium-stat-card', '.impact-section');
+      animate3DCards('.platform-card', '.platforms-section');
+      // For catalogue flip cards, animate an inner wrapper or scale them so it doesn't break the native flip
+      animate3DCards('.flip-card', '.catalogue-section');
+      
+      // Testimonials Marquee specific 3D entrance
+      gsap.set('.testimonials-section', { perspective: 1500 });
+      gsap.fromTo('.marquee-wrapper',
+        { y: 60, z: -100, rotationX: -10, opacity: 0 },
+        { 
+          y: 0, z: 0, rotationX: 0, opacity: 1, 
+          duration: 1.4, 
           ease: 'power3.out',
           scrollTrigger: {
-            trigger,
-            start: 'top 75%',
-            toggleActions: 'play none none none',
+            trigger: '.testimonials-section',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
           }
         }
       );
-    };
 
-    // Wait for DOM to settle, then apply animations
-    setTimeout(() => {
-      animateItems('.stat-card', '.impact-section');
-      animateItems('.platform-card', '.platforms-section');
-      animateItems('.flip-card', '.catalogue-section');
-    }, 300);
+      // Apply to all major section titles
+      animateHeadlines('.impact-title, .platforms-title, .catalogue-title, .testimonials-title');
+      
+      ScrollTrigger.refresh();
+    }, 400);
 
     return () => {
       lenis.destroy();
@@ -132,17 +189,12 @@ function App() {
 
           <div className="section-divider" />
           <ImpactSection />
-
-          <div className="section-divider" />
           <PlatformsSection />
-
-          <div className="section-divider" />
           <CatalogueSection />
-
-          <div className="section-divider" />
           <TestimonialsSection />
         </main>
 
+        <div className="section-divider" />
         <Footer />
       </div>
     </>

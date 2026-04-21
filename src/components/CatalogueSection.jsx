@@ -2,9 +2,9 @@ const COURSES = [
   {
     icon: '👥',
     tag: 'Management',
-    tagColor: '#00E5FF',
+    tagColor: '#B01116',
     title: 'People Management',
-    frontBg: '#00E5FF',
+    frontBg: '#B01116',
     desc: 'Master the art and science of leading teams. Learn how to recruit, motivate, develop, and retain talent in a dynamic, modern workplace.',
     modules: ['Team Dynamics', 'Performance Management', 'Conflict Resolution', 'Leadership Styles'],
     duration: '8 Weeks',
@@ -13,9 +13,9 @@ const COURSES = [
   {
     icon: '📊',
     tag: 'Finance',
-    tagColor: '#0066FF',
+    tagColor: '#0044CC',
     title: 'Financial Accounting',
-    frontBg: '#0066FF',
+    frontBg: '#0044CC',
     desc: 'Build a solid foundation in financial accounting principles. Interpret financial statements and make data-driven business decisions confidently.',
     modules: ['Balance Sheet Analysis', 'P&L Statements', 'Cash Flow Management', 'Financial Ratios'],
     duration: '10 Weeks',
@@ -35,9 +35,9 @@ const COURSES = [
   {
     icon: '📱',
     tag: 'Marketing',
-    tagColor: '#FFD700',
+    tagColor: '#C8A000',
     title: 'Digital Marketing',
-    frontBg: '#FFD700',
+    frontBg: '#C8A000',
     desc: 'Drive business growth in the digital era. From SEO to performance marketing, build end-to-end digital strategies that deliver measurable results.',
     modules: ['SEO & SEM', 'Social Media Strategy', 'Content Marketing', 'Analytics & Attribution'],
     duration: '8 Weeks',
@@ -81,41 +81,50 @@ const CatalogueSection = () => {
 
                 {/* BACK */}
                 <div className="flip-card-back">
-                  <div>
-                    <div className="flip-back-icon">{course.icon}</div>
-                    <h3 className="flip-back-title">{course.title}</h3>
-                    <p className="flip-back-desc">{course.desc}</p>
-                  </div>
-
-                  <div>
-                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-                      {course.modules.map(m => (
-                        <span key={m} style={{
-                          fontSize: '0.7rem',
-                          fontWeight: 600,
-                          padding: '0.3rem 0.8rem',
-                          borderRadius: '100px',
-                          background: 'rgba(255,255,255,0.05)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          color: 'var(--text-muted)',
-                        }}>
-                          {m}
-                        </span>
-                      ))}
+                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    {/* Top */}
+                    <div>
+                      <div className="flip-back-icon">{course.icon}</div>
+                      <h3 className="flip-back-title">{course.title}</h3>
+                      <p className="flip-back-desc" style={{
+                        overflow: 'hidden',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        marginBottom: '1rem'
+                      }}>
+                        {course.desc}
+                      </p>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.5rem' }}>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        ⏱ {course.duration}
-                      </span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        📈 {course.level}
-                      </span>
-                    </div>
+                    {/* Middle — modules + meta */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '0.6rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        {course.modules.slice(0, 3).map(m => (
+                          <span key={m} style={{
+                            fontSize: '0.65rem',
+                            fontWeight: 600,
+                            padding: '0.25rem 0.65rem',
+                            borderRadius: '100px',
+                            background: 'rgba(255,255,255,0.08)',
+                            border: '1px solid rgba(255,255,255,0.12)',
+                            color: 'rgba(255,255,255,0.6)',
+                          }}>
+                            {m}
+                          </span>
+                        ))}
+                      </div>
 
-                    <a href="https://iimbx.iimb.ac.in/catalog/" className="flip-back-cta">
-                      Enroll Now →
-                    </a>
+                      <div style={{ display: 'flex', gap: '1rem' }}>
+                        <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)' }}>⏱ {course.duration}</span>
+                        <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)' }}>📈 {course.level}</span>
+                      </div>
+
+                      {/* Enroll button — always pinned */}
+                      <a href="https://iimbx.iimb.ac.in/catalog/" className="flip-back-cta">
+                        Enroll Now →
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
